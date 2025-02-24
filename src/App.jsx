@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 import Navbar from "./components/Navbar/Heading.jsx";
 import FooterPage from "./components/Footer/FooterPage.jsx";
-import DashboardPage from "./components/Dashboard/DashboardPage.jsx";
+import DashboardPage from "./components/Pages_Dashboard/DashboardPage.jsx";
 import Login from "./components/Authentication/Login.jsx";
 import SignUp from "./components/Authentication/SignUp.jsx";
 import ForgotPassword from "./components/Authentication/ForgotPassword.jsx";
