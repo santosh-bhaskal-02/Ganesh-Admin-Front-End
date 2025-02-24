@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./index.css";
 import Navbar from "./components/Navbar/Heading.jsx";
-import Footer from "./components/Footer/FooterPage.jsx";
-import Dashboard from "./components/Dashboard/DashboardPage.jsx";
+import FooterPage from "./components/Footer/FooterPage.jsx";
+import DashboardPage from "./components/Dashboard/DashboardPage.jsx";
 import Login from "./components/Authentication/Login.jsx";
 import SignUp from "./components/Authentication/SignUp.jsx";
 import ForgotPassword from "./components/Authentication/ForgotPassword.jsx";
@@ -19,13 +19,13 @@ function App() {
           <div className="w-full">
             <Routes>
               <Route path="/" element={<LandingPage />} />
-              <Route path="/Dashboard/*" element={<Dashboard />} />
+              <Route path="/Dashboard/*" element={<DashboardPage />} />
               <Route path="/Login" element={<Login />} />
               <Route path="/SignUp" element={<SignUp />} />
               <Route path="/ForgotPassword" element={<ForgotPassword />} />
             </Routes>
 
-            <Footer />
+            <FooterPage />
           </div>
         </IdolProvider>
       </AuthProvider>
