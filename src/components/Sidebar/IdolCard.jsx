@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { IdolContext } from "../AuthContext/IdolContext";
+import { IdolContext } from "../Context/IdolContext";
 import { useNavigate } from "react-router-dom";
 import { Pencil, Eye, X } from "lucide-react";
 import axios from "axios";

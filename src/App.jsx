@@ -3,13 +3,13 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 import Navbar from "./components/Navbar/Heading.jsx";
 import Footer from "./components/Footer/FooterPage.jsx";
-import Dashboard from "./components/Dashboard/Dashboard.jsx";
+import Dashboard from "./components/Dashboard/DashboardPage.jsx";
 import Login from "./components/Authentication/Login.jsx";
 import SignUp from "./components/Authentication/SignUp.jsx";
 import ForgotPassword from "./components/Authentication/ForgotPassword.jsx";
 import LandingPage from "./components/Home/LandingPage.jsx";
-import { AuthProvider } from "./components/AuthContext/AuthContext.jsx";
-import { IdolProvider } from "./components/AuthContext/IdolContext.jsx";
+import { AuthProvider } from "./components/Context/AuthContext.jsx";
+import { IdolProvider } from "./components/Context/IdolContext.jsx";
 function App() {
   return (
     <Router>

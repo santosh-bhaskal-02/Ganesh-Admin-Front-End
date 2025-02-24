@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import { AuthContext } from "../AuthContext/AuthContext";
+import { AuthContext } from "../Context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

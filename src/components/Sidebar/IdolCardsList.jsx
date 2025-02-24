@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import IdolCard from "./IdolCard";
-import { IdolContext } from "../AuthContext/IdolContext";
+import { IdolContext } from "../Context/IdolContext";
 
 function IdolCardsList() {
   const { idolList } = useContext(IdolContext);

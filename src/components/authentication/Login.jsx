@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../AuthContext/AuthContext";
+import { AuthContext } from "../Context/AuthContext";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -22,8 +22,6 @@ const LoginForm = () => {
       [name]: value,
     }));
   };
-
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

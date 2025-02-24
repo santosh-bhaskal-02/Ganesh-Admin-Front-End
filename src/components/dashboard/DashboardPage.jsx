@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Sidebar from "../Sidebar/Sidebar";
+import Sidebar from "../Sidebar/SidebarPage";
 import Addidol from "../Sidebar/Addidol";
 import EditIdol from "../Sidebar/EditIdol";
 import AddCategory from "../Sidebar/AddCategory";
