@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./index.css";
-import Navbar from "./components/navbar/Navbar";
-import Footer from "./components/footer/Footer";
-import Dashboard from "./components/dashboard/Dashboard";
-import Login from "./components/authentication/Login";
-import SignUp from "./components/authentication/SignUp";
-import ForgotPassword from "./components/authentication/ForgotPassword";
+import Navbar from "./components/Navbar/Heading.jsx";
+import Footer from "./components/Footer/Footer.jsx";
+import Dashboard from "./components/Dashboard/Dashboard.jsx";
+import Login from "./components/Authentication/Login.jsx";
+import SignUp from "./components/Authentication/SignUp.jsx";
+import ForgotPassword from "./components/Authentication/ForgotPassword.jsx";
 import LandingPage from "./components/Home/LandingPage.jsx";
 import { AuthProvider } from "./components/AuthContext/AuthContext.jsx";
 import { IdolProvider } from "./components/AuthContext/IdolContext.jsx";
