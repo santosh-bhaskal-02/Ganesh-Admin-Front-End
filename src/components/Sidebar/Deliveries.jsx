@@ -1,181 +1,305 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import AlertBox from "./AlertBox";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  LocalShipping as LocalShippingIcon,
+  Person as PersonIcon,
+  ShoppingCart as ShoppingCartIcon,
+} from "@mui/icons-material";
+import DeliverySkeleton from "../Skeleton/DeliverySkeleton";
+import LoadingSpinner from "../Error/LoadingSpinner";
+import NoOrder from "../Error/NoOrder";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
 const Deliveries = () => {
-  const [deliveries, setDeliveries] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
   const [alert, setAlert] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+  const [statusloading, setStatusLoading] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const authToken = Cookies.get("adminAuthToken");
-      if (!authToken) {
-        setAlert({
-          type: "error",
-          title: "Authentication Error",
-          message: "No auth token found.",
-        });
+      const token = Cookies.get("adminAuthToken");
+      if (!token) {
+        console.error("Unauthorized");
         return;
       }
 
       try {
         const response = await axios.get(`${apiUrl}/api/products/orders/allorders`, {
-          headers: { Authorization: `Bearer ${authToken}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!Array.isArray(response.data)) {
-          console.error("Unexpected API response:", response.data);
-          setDeliveries([]);
+          setOrders([]);
           return;
         }
-        console.log(response.data);
-        setDeliveries(response.data);
+
+        setOrders(response.data);
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        console.error("Fetch failed:", error);
         setAlert({
           type: "error",
-          title: "Fetch Failed",
-          message: "Could not retrieve orders.",
+          title: "Error",
+          message: "Unable to fetch delivery orders.",
         });
-        setDeliveries([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchOrders();
   }, []);
 
-  const updateStatus = async (id, newStatus) => {
-    const authToken = Cookies.get("adminAuthToken");
-
+  const updateStatus = async (orderId, newStatus) => {
+    setStatusLoading(true);
+    const token = Cookies.get("adminAuthToken");
     try {
       const response = await axios.put(
-        `${apiUrl}/api/products/orders/update/${id}`,
+        `${apiUrl}/api/products/orders/update/${orderId}`,
         { status: newStatus },
         {
           headers: {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         }
       );
-
       if (response.status === 200) {
-        setDeliveries((prevDeliveries) =>
-          prevDeliveries.map((delivery) =>
-            delivery._id === id ? { ...delivery, status: newStatus } : delivery
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order._id === orderId ? { ...order, status: newStatus } : order
           )
         );
-        setAlert({
-          type: "success",
-          title: "Update Successful",
-          message: "Order status updated!",
-        });
       }
     } catch (error) {
-      console.error("Error updating status:", error);
-      setAlert({
-        type: "error",
-        title: "Update Failed",
-        message: "Could not update order status.",
-      });
+      console.error("Status update failed:", error);
+    } finally {
+      setStatusLoading(false);
+    }
+  };
+
+  const filteredOrders = orders.filter((order) => {
+    const matchSearch = order._id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchStatus =
+      !filterStatus || order.status.toLowerCase() === filterStatus.toLowerCase();
+    return matchSearch && matchStatus;
+  });
+
+  const statusOptions = [
+    "Awaiting for Payment",
+    "Payment Successful",
+    "Shipped",
+    "Out for Delivery",
+    "Delivered",
+    "Cancelled",
+  ];
+
+  const getStatusStyles = (status) => {
+    switch (status) {
+      case "Delivered":
+        return "bg-green-200 text-green-700";
+      case "Cancelled":
+        return "bg-red-200 text-red-700";
+      case "Shipped":
+        return "bg-blue-200 text-blue-700";
+      case "Out for Delivery":
+        return "bg-orange-200 text-orange-700";
+      default:
+        return "bg-yellow-200 text-yellow-700";
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-8 flex justify-center items-center">
-      {/* Show AlertBox if alert exists */}
+    <motion.div
+      className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-white py-10 px-4 md:px-6"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}>
+      {statusloading && <LoadingSpinner />}
       {alert && (
-        <AlertBox
-          type={alert.type}
-          title={alert.title}
-          message={alert.message}
-          onClick={() => setAlert(null)}
-        />
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[1000]">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3
+              className={`text-${
+                alert.type === "success" ? "green" : "red"
+              }-500 font-bold`}>
+              {alert.title}
+            </h3>
+            <p>{alert.message}</p>
+            <button
+              onClick={() => setAlert(null)}
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
+              Close
+            </button>
+          </div>
+        </div>
       )}
 
-      <div className="max-w-7xl w-full bg-white p-10 rounded-2xl shadow-xl">
-        <h2 className="text-4xl font-bold mb-8 text-gray-900 text-center uppercase tracking-wider">
-          Deliveries Management
-        </h2>
+      <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8 tracking-wide">
+        Delivery Management
+      </h1>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow-md border border-gray-200">
-            <thead>
-              <tr className="bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm uppercase">
-                <th className="py-4 px-6 text-left font-semibold">Order ID</th>
-                <th className="py-4 px-6 text-left font-semibold">Customer Name</th>
-                <th className="py-4 px-6 text-left font-semibold">Delivery Address</th>
-                <th className="py-4 px-6 text-left font-semibold">Status</th>
-                <th className="py-4 px-6 text-center font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {deliveries.map((delivery, index) => (
-                <tr
-                  key={delivery._id}
-                  className={`hover:bg-gradient-to-r hover:from-purple-200 hover:to-blue-200 transition-colors duration-200 ${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                  }`}>
-                  <td className="py-4 px-6 text-gray-800 font-medium">{delivery._id}</td>
-                  <td className="py-4 px-6 text-gray-800 font-medium">
-                    {delivery.shipAddress.firstName + " " + delivery.shipAddress.lastName}
-                  </td>
-                  <td className="py-4 px-6 text-gray-800 font-medium">
-                    {delivery.shipAddress ? (
-                      <div className="text-sm leading-relaxed">
-                        {delivery.shipAddress.address1}, {delivery.shipAddress.city},
-                        <br />
-                        {delivery.shipAddress.state} - {delivery.shipAddress.zip},<br />
-                        {delivery.shipAddress.country}
-                      </div>
-                    ) : (
-                      "N/A"
-                    )}
-                  </td>
-                  <td className="py-4 px-6">
-                    <div className="flex flex-col items-start">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          delivery.status === "Pending"
-                            ? "bg-yellow-100 text-yellow-600"
-                            : delivery.status === "Dispatched"
-                            ? "bg-blue-100 text-blue-600"
-                            : "bg-green-100 text-green-600"
-                        }`}>
-                        {delivery.status}
-                      </span>
-                      <div className="w-32 h-2 bg-gray-200 rounded-full mt-2 overflow-hidden">
-                        <div
-                          className={`h-full transition-all duration-300 ${
-                            delivery.status === "Pending"
-                              ? "bg-yellow-500 w-1/3"
-                              : delivery.status === "Dispatched"
-                              ? "bg-blue-500 w-2/3"
-                              : "bg-green-500 w-full"
-                          }`}></div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-4 px-6 text-center">
-                    <select
-                      value={delivery.status}
-                      onChange={(e) => updateStatus(delivery._id, e.target.value)}
-                      className="px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300 text-sm shadow-sm bg-white">
-                      <option value="Pending">Pending</option>
-                      <option value="Dispatched">Dispatched</option>
-                      <option value="Delivered">Delivered</option>
-                    </select>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Search and Filter */}
+      <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+        <input
+          type="text"
+          placeholder="Search by Order ID..."
+          className="w-full md:w-2/3 p-4 border border-blue-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <select
+          className="p-4 border border-blue-300 rounded-lg w-full md:w-1/3 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}>
+          {statusOptions.map((statusOption) => (
+            <option key={statusOption} value={statusOption}>
+              {statusOption}
+            </option>
+          ))}
+        </select>
       </div>
-    </div>
+      {filteredOrders.length == 0 ? (
+        <NoOrder />
+      ) : (
+        <>
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="min-w-full table-auto bg-white shadow-lg rounded-lg">
+              <thead className="bg-gradient-to-r from-blue-400 to-indigo-500 text-white rounded-t-lg">
+                <tr>
+                  <th className="px-6 py-3 text-left text-lg font-semibold rounded-l-lg">
+                    Order ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-lg font-semibold">Customer</th>
+                  <th className="px-6 py-3 text-left text-lg font-semibold">Address</th>
+                  <th className="px-6 py-3 text-left text-lg font-semibold">Status</th>
+                  <th className="px-6 py-3 text-left text-lg font-semibold">Update</th>
+                  <th className="px-6 py-3 text-left text-lg font-semibold rounded-r-lg">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <DeliverySkeleton />
+                ) : (
+                  filteredOrders.map((order) => (
+                    <tr
+                      key={order._id}
+                      className="hidden md:table-row border-b hover:bg-blue-50">
+                      <td className="px-6 py-4 text-gray-800 rounded-l-lg">
+                        {order._id}
+                      </td>
+                      <td className="px-6 py-4 text-gray-600 flex items-center gap-2">
+                        <PersonIcon fontSize="small" />
+                        {order.shipAddress?.firstName} {order.shipAddress?.lastName}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {order.shipAddress?.address1}, {order.shipAddress?.city},<br />
+                        {order.shipAddress?.state} - {order.shipAddress?.zip}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs ${getStatusStyles(
+                            order.status
+                          )}`}>
+                          {order.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <select
+                          value={order.status}
+                          onChange={(e) => updateStatus(order._id, e.target.value)}
+                          className="p-2 rounded-md border border-gray-300 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                          {statusOptions.map((statusOption) => (
+                            <option key={statusOption} value={statusOption}>
+                              {statusOption}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="px-6 py-4 rounded-r-lg">
+                        <Link
+                          to={`/dashboard/users/user/order_details/${order._id}`}
+                          className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm font-medium shadow">
+                          <ShoppingCartIcon fontSize="small" />
+                          View Order
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
+
+                {/* Mobile View Cards */}
+                {loading ? (
+                  <LoadingSpinner />
+                ) : (
+                  filteredOrders.map((order) => (
+                    <tr key={order._id} className="md:hidden">
+                      <td colSpan={6} className="py-4">
+                        <div className="bg-white shadow-md rounded-lg p-4 space-y-3">
+                          <div className="text-sm font-semibold text-gray-700">
+                            <span className="block">Order ID:</span>
+                            <span className="text-blue-700 break-words">{order._id}</span>
+                          </div>
+
+                          <div className="flex items-center text-sm text-gray-600">
+                            <PersonIcon fontSize="small" className="mr-2 text-blue-600" />
+                            {order.shipAddress?.firstName} {order.shipAddress?.lastName}
+                          </div>
+
+                          <div className="text-sm text-gray-600">
+                            {order.shipAddress?.address1}, {order.shipAddress?.city},{" "}
+                            {order.shipAddress?.state} - {order.shipAddress?.zip}
+                          </div>
+
+                          <div className="text-sm">
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs ${getStatusStyles(
+                                order.status
+                              )}`}>
+                              {order.status}
+                            </span>
+                          </div>
+
+                          <div>
+                            <select
+                              value={order.status}
+                              onChange={(e) => updateStatus(order._id, e.target.value)}
+                              className="w-full p-2 mt-1 rounded-md border border-gray-300 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                              {statusOptions.map((statusOption) => (
+                                <option key={statusOption} value={statusOption}>
+                                  {statusOption}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <Link
+                            to={`/dashboard/users/user/order_details/${order._id}`}
+                            className="flex items-center gap-2 justify-center px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm font-medium shadow">
+                            <ShoppingCartIcon fontSize="small" />
+                            View Order
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </motion.div>
   );
 };
 

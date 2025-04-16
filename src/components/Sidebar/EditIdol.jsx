@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import AlertBox from "./AlertBox";
+import AlertBox from "../Error/AlertBox";
 import { useNavigate, useParams } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 
@@ -204,7 +204,7 @@ const Addidol = () => {
         message: response.data.message,
       });
 
-     navigate("/dashboard/idols");
+      navigate("/dashboard/idols");
     } catch (error) {
       console.error("Error deleting product:", error);
       setAlert({

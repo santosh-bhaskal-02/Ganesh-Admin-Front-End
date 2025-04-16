@@ -14,6 +14,7 @@ import {
 import { Pie, Bar, Line, Doughnut } from "react-chartjs-2";
 import axios from "axios";
 import Cookies from "js-cookie";
+import ErrorPage from "../../Error/ErrorPage";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -36,14 +37,16 @@ const HomeDashboard = () => {
   const [totalOrders, setTotalOrders] = useState(null);
   const [inventoryCount, setInventoryCount] = useState(null);
   const [totalOrderItems, setTotalOrderItems] = useState(null);
+
+  const authToken = Cookies.get("adminAuthToken");
+
+  if (!authToken) {
+    console.error("User is not authenticated. Missing token or userId.");
+    return <ErrorPage />;
+  }
+
   useEffect(() => {
     const fetchData = async () => {
-      const authToken = Cookies.get("adminAuthToken");
-      if (!authToken) {
-        console.error("No auth token found.");
-        return;
-      }
-
       try {
         const response = await axios.get(`${apiUrl}/api/dashboard/fetch`, {
           headers: { Authorization: `Bearer ${authToken}` },
@@ -51,7 +54,7 @@ const HomeDashboard = () => {
 
         console.log(response.data);
         setIdolCount(response.data.productsCount);
-        setUsersCount(response.data.usersCount);
+        setUsersCount(response.data.usersCount.count);
         setTotalSales(response.data.totalSales);
         setTotalOrders(response.data.totalOrders);
         setInventoryCount(response.data.inventoryCount);
@@ -116,12 +119,7 @@ const HomeDashboard = () => {
         <ChartCard title="Idol Sales Overview" ChartComponent={<Pie data={pieData} />} />
         <ChartCard title="Sales Revenue" ChartComponent={<Line data={barData} />} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <ChartCard
-          title="Material Usage"
-          ChartComponent={<Doughnut data={doughnutData} />}
-        />
-      </div>
+    
     </div>
   );
 };

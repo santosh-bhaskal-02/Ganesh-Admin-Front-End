@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import AlertBox from "./AlertBox";
+import AlertBox from "../Error/AlertBox";
+import ErrorPage from "../Error/ErrorPage";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -10,14 +11,30 @@ const Addidol = () => {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
 
-  useEffect(() => {
-    const fetchCategory = async () => {
-      const authToken = Cookies.get("adminAuthToken");
-      if (!authToken) {
-        console.error("No auth token found.");
-        return;
-      }
+  const [formData, setFormData] = useState({
+    title: "",
+    stock: 1,
+    category: "",
+    size: 1,
+    price: "",
+    description: "",
+    image: null,
+  });
 
+  const authToken = Cookies.get("adminAuthToken");
+  const adminId = Cookies.get("adminId");
+
+  if (!authToken) {
+    console.error("No auth token found.");
+    return ErrorPage;
+  }
+
+  useEffect(() => {
+    if (!authToken) {
+      console.error("No auth token found.");
+      return;
+    }
+    const fetchCategory = async () => {
       try {
         const response = await axios.get(`${apiUrl}/api/products/category/fetch`, {
           headers: { Authorization: `Bearer ${authToken}` },
@@ -46,16 +63,6 @@ const Addidol = () => {
     fetchCategory();
   }, []);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    stock: 1,
-    category: "",
-    size: 1,
-    price: "",
-    description: "",
-    image: null,
-  });
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -76,19 +83,6 @@ const Addidol = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const authToken = Cookies.get("adminAuthToken");
-    const adminId = Cookies.get("adminId");
-
-    if (!adminId || !authToken) {
-      setAlert({
-        type: "error",
-        title: "Oops!",
-        message: "Authentication failed. Please log in again.",
-      });
-      setLoading(false);
-      return;
-    }
 
     if (!formData.image) {
       setAlert({ type: "error", title: "Oops!", message: "Please upload an image." });

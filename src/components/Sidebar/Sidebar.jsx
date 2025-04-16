@@ -10,7 +10,7 @@ import {
   Menu,
   X,
   Layers,
-  Package
+  Package,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -63,7 +63,7 @@ const Sidebar = () => {
           />
 
           <SidebarItem
-            to="/dashboard/Users"
+            to="/dashboard/users"
             icon={<Users size={20} />}
             text="Users"
             isOpen={isSidebarOpen}
