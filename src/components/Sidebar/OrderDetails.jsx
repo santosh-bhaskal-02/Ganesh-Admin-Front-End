@@ -34,10 +34,10 @@ function OrderDetails() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const userId = Cookies.get("userId");
+  // const userId = Cookies.get("userId");
   const authToken = Cookies.get("authToken");
 
-  if (!userId || !authToken) {
+  if (!authToken) {
     console.error("User is not authenticated. Missing token or userId.");
     return <ErrorPage />;
   }
@@ -51,7 +51,7 @@ function OrderDetails() {
         if (response.status === 200) {
           setOrder(response.data);
         }
-        console.log(response.data)
+        console.log(response.data);
       } catch (err) {
         console.error("Error fetching order details:", err);
       } finally {
