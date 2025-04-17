@@ -33,7 +33,7 @@ const Dashboard = () => {
           <Route path="/" element={<HomeDashboard />}></Route>
           <Route path="/idols" element={<IdolCardsList />}></Route>
           <Route path="/Addidol" element={<Addidol />}></Route>
-          <Route path="/edit_Idol/:pid" element={<EditIdol />}></Route>
+          <Route path="/edit_Idol/:idolId" element={<EditIdol />}></Route>
           <Route path="/AddCategory" element={<AddCategory />}></Route>
           <Route path="/users" element={<Users />}></Route>
           <Route path="/Notifications" element={<Notifications />}></Route>

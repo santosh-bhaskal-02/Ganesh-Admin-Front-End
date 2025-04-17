@@ -9,12 +9,22 @@ import {
   BarElement,
   LineElement,
   PointElement,
-  DoughnutController,
 } from "chart.js";
-import { Pie, Bar, Line, Doughnut } from "react-chartjs-2";
+import { Pie, Line } from "react-chartjs-2";
 import axios from "axios";
 import Cookies from "js-cookie";
 import ErrorPage from "../../Error/ErrorPage";
+import {
+  FaUsers,
+  FaBoxOpen,
+  FaShoppingBag,
+  FaShoppingCart,
+  FaCoins,
+  FaBoxes,
+} from "react-icons/fa";
+
+import DashboardCardSkelton from "../../Skeleton/DashboardCardSkeleton";
+import DashboardChartSkelton from "../../Skeleton/DashBoardChartSkeleton";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -26,8 +36,7 @@ ChartJS.register(
   LinearScale,
   BarElement,
   LineElement,
-  PointElement,
-  DoughnutController
+  PointElement
 );
 
 const HomeDashboard = () => {
@@ -37,30 +46,28 @@ const HomeDashboard = () => {
   const [totalOrders, setTotalOrders] = useState(null);
   const [inventoryCount, setInventoryCount] = useState(null);
   const [totalOrderItems, setTotalOrderItems] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const authToken = Cookies.get("adminAuthToken");
 
-  if (!authToken) {
-    console.error("User is not authenticated. Missing token or userId.");
-    return <ErrorPage />;
-  }
+  if (!authToken) return <ErrorPage />;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/dashboard/fetch`, {
+        const { data } = await axios.get(`${apiUrl}/api/dashboard/fetch`, {
           headers: { Authorization: `Bearer ${authToken}` },
         });
-
-        console.log(response.data);
-        setIdolCount(response.data.productsCount);
-        setUsersCount(response.data.usersCount.count);
-        setTotalSales(response.data.totalSales);
-        setTotalOrders(response.data.totalOrders);
-        setInventoryCount(response.data.inventoryCount);
-        setTotalOrderItems(response.data.totalOrderItems);
+        setIdolCount(data.productsCount);
+        setUsersCount(data.usersCount.count);
+        setTotalSales(data.totalSales);
+        setTotalOrders(data.totalOrders);
+        setInventoryCount(data.inventoryCount);
+        setTotalOrderItems(data.totalOrderItems);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -74,66 +81,102 @@ const HomeDashboard = () => {
     datasets: [
       {
         data: [totalOrderItems, inventoryCount],
-        backgroundColor: ["#f87171", "#60a5fa"],
+        backgroundColor: ["#fbbf24", "#fde68a"],
       },
     ],
   };
 
-  const barData = {
+  const lineData = {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
     datasets: [
       {
         label: "Sales",
-        data: 0,
-        backgroundColor: "#4ade80",
-      },
-    ],
-  };
-
-  const doughnutData = {
-    labels: ["Gold", "Silver", "Clay"],
-    datasets: [
-      {
-        data: [40, 35, 25],
-        backgroundColor: ["#FFD700", "#C0C0C0", "#D2691E"],
+        data: [12, 19, 10, 14, 22],
+        backgroundColor: "rgba(255, 215, 0, 0.5)",
+        borderColor: "#FFD700",
+        fill: true,
+        tension: 0.4,
       },
     ],
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800"> Dashboard</h1>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-        <StatCard title="Total Inventory" value={inventoryCount} color="bg-orange-500" />
-        <StatCard title="Total Idols" value={idolCount} color="bg-orange-500" />
-        <StatCard title="Active Users" value={usersCount} color="bg-blue-500" />
-        <StatCard title="Total Orders" value={totalOrders} color="bg-blue-500" />
-        <StatCard
-          title="Total Orders Items"
-          value={totalOrderItems}
-          color="bg-blue-500"
-        />
-        <StatCard title="Total Sales" value={`₹ ${totalSales}`} color="bg-green-500" />
+    <div className="p-6 bg-gradient-to-br from-yellow-50 via-white to-blue-100 min-h-screen">
+      <h1 className="text-4xl font-bold text-yellow-800 mb-6">Admin Dashboard</h1>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+        {loading ? (
+          Array.from({ length: 6 }).map((_, i) => <DashboardCardSkelton key={i} />)
+        ) : (
+          <>
+            <StatCard
+              icon={<FaBoxes />}
+              title="Total Inventory"
+              value={inventoryCount}
+              color={{ bg: "bg-yellow-400", text: "text-yellow-900" }}
+            />
+            <StatCard
+              icon={<FaBoxOpen />}
+              title="Total Idols"
+              value={idolCount}
+              color={{ bg: "bg-blue-500", text: "text-white" }}
+            />
+            <StatCard
+              icon={<FaUsers />}
+              title="Active Users"
+              value={usersCount}
+              color={{ bg: "bg-yellow-400", text: "text-yellow-900" }}
+            />
+            <StatCard
+              icon={<FaShoppingCart />}
+              title="Total Orders"
+              value={totalOrders}
+              color={{ bg: "bg-blue-500", text: "text-white" }}
+            />
+            <StatCard
+              icon={<FaShoppingBag />}
+              title="Order Items"
+              value={totalOrderItems}
+              color={{ bg: "bg-yellow-400", text: "text-yellow-900" }}
+            />
+            <StatCard
+              icon={<FaCoins />}
+              title="Total Sales"
+              value={`₹ ${totalSales}`}
+              color={{ bg: "bg-blue-500", text: "text-white" }}
+            />
+          </>
+        )}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <ChartCard title="Idol Sales Overview" ChartComponent={<Pie data={pieData} />} />
-        <ChartCard title="Sales Revenue" ChartComponent={<Line data={barData} />} />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+        {loading ? (
+          <>
+            <DashboardChartSkelton />
+            <DashboardChartSkelton />
+          </>
+        ) : (
+          <>
+            <ChartCard title="Inventory Status" ChartComponent={<Pie data={pieData} />} />
+            <ChartCard title="Sales Trend" ChartComponent={<Line data={lineData} />} />
+          </>
+        )}
       </div>
-    
     </div>
   );
 };
 
-const StatCard = ({ title, value, color }) => (
-  <div className={`${color} text-white p-6 rounded-lg shadow-lg`}>
+const StatCard = ({ title, value, icon, color }) => (
+  <div
+    className={`${color.bg} ${color.text} p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 flex flex-col items-start gap-2`}>
+    <div className="text-3xl">{icon}</div>
     <h2 className="text-lg font-semibold">{title}</h2>
     <p className="text-2xl font-bold">{value}</p>
   </div>
 );
 
 const ChartCard = ({ title, ChartComponent }) => (
-  <div className="bg-white p-6 rounded-lg shadow-lg">
-    <h3 className="text-xl font-bold mb-4">{title}</h3>
+  <div className="bg-white p-6 rounded-xl shadow-lg">
+    <h3 className="text-xl font-bold mb-4 text-yellow-700">{title}</h3>
     {ChartComponent}
   </div>
 );

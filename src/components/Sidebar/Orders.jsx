@@ -90,7 +90,7 @@ const Orders = () => {
         </div>
       )}
 
-      <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8 tracking-wide">
+      <h1 className="text-4xl font-bold text-center text-purple-800 mb-8">
         Order Management
       </h1>
       {/* Search and Filter */}
@@ -116,7 +116,9 @@ const Orders = () => {
         </select>
       </div>
 
-      {filteredOrders.length === 0 ? (
+      {loading ? (
+        <OrderSkeleton />
+      ) : filteredOrders.length === 0 ? (
         <NoOrder />
       ) : (
         <>
@@ -139,44 +141,38 @@ const Orders = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <OrderSkeleton />
-                ) : (
-                  filteredOrders.map((order) => (
-                    <tr key={order._id} className="border-b hover:bg-yellow-50">
-                      <td className="px-6 py-4 text-gray-800 rounded-l-lg">
-                        {order._id}
-                      </td>
-                      <td className="px-6 py-4 text-gray-600 flex items-center gap-2">
-                        <PersonIcon fontSize="small" /> {order.user.firstName}{" "}
-                        {order.user.lastName}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs ${
-                            order.status === "Delivered"
-                              ? "bg-green-200 text-green-700"
-                              : order.status === "Cancelled"
-                              ? "bg-red-200 text-red-700"
-                              : order.status === "Shipped"
-                              ? "bg-blue-200 text-blue-700"
-                              : "bg-yellow-200 text-yellow-700"
-                          }`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-gray-700">₹{order.totalPrice}</td>
-                      <td className="px-6 py-4 rounded-r-lg">
-                        <Link
-                          to={`/dashboard/users/user/order_details/${order._id}`}
-                          className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm font-medium shadow">
-                          <ShoppingCartIcon fontSize="small" />
-                          View Order
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                {filteredOrders.map((order) => (
+                  <tr key={order._id} className="border-b hover:bg-yellow-50">
+                    <td className="px-6 py-4 text-gray-800 rounded-l-lg">{order._id}</td>
+                    <td className="px-6 py-4 text-gray-600 flex items-center gap-2">
+                      <PersonIcon fontSize="small" /> {order.user.firstName}{" "}
+                      {order.user.lastName}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs ${
+                          order.status === "Delivered"
+                            ? "bg-green-200 text-green-700"
+                            : order.status === "Cancelled"
+                            ? "bg-red-200 text-red-700"
+                            : order.status === "Shipped"
+                            ? "bg-blue-200 text-blue-700"
+                            : "bg-yellow-200 text-yellow-700"
+                        }`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">₹{order.totalPrice}</td>
+                    <td className="px-6 py-4 rounded-r-lg">
+                      <Link
+                        to={`/dashboard/users/user/order_details/${order._id}`}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm font-medium shadow">
+                        <ShoppingCartIcon fontSize="small" />
+                        View Order
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

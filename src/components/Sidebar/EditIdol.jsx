@@ -1,133 +1,102 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import {
+  FileText,
+  Layers,
+  List,
+  Ruler,
+  IndianRupee,
+  ImageIcon,
+  StickyNote,
+  Upload,
+  Trash2,
+} from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import DialogBox from "../Error/DialogBox";
 import AlertBox from "../Error/AlertBox";
-import { useNavigate, useParams } from "react-router-dom";
-import { Trash2 } from "lucide-react";
+import ErrorPage from "../Error/ErrorPage";
+import LoadingSpinner from "../Error/LoadingSpinner";
+import { useParams, useNavigate } from "react-router-dom";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
-const Addidol = () => {
+const EditIdol = () => {
   const [category, setCategory] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState(null);
-  const { pid } = useParams();
-  const [imageSrc, setImageSrc] = useState("");
-  const [idol, setIdol] = useState(null);
-
-  const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     title: "",
     stock: 1,
     category: "",
     size: 1,
     price: "",
-    reachDisciption: "",
+    description: "",
     image: null,
-    image_url: "",
   });
+  const [idolPreview, setIdolPreview] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [alert, setAlert] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const authToken = Cookies.get("adminAuthToken");
+  const { idolId } = useParams();
+  const navigate = useNavigate();
+
+  if (!authToken) return <ErrorPage />;
 
   useEffect(() => {
-    const fetchIdolDetails = async () => {
-      setLoading(true);
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/products/${pid}`);
-        if (response.status === 200) {
-          setFormData((prev) => ({
-            ...prev,
-            ...response.data,
-            image_url: response.data.thumbnail?.image_url || "",
-            category: response.data.category.id,
-          }));
-          setImageSrc(response.data.thumbnail?.image_url || "fallback-image.jpg");
-        }
-      } catch (err) {
-        console.error("Error fetching idol details:", err);
-        setError(true);
+        const [categoryRes, idolRes] = await Promise.all([
+          axios.get(`${apiUrl}/api/products/category/fetch`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }),
+          axios.get(`${apiUrl}/api/products/${idolId}`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }),
+        ]);
+
+        setCategory(categoryRes.data);
+        const idol = idolRes.data;
+
+        setFormData({
+          title: idol.title,
+          stock: idol.stock,
+          category: idol.category,
+          size: idol.size,
+          price: idol.price,
+          description: idol.description,
+          image: null,
+        });
+        console.log(idol);
+        setIdolPreview(idol.thumbnail.image_url);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setAlert({
+          type: "error",
+          title: "Oops!",
+          message: "Failed to fetch idol or category data.",
+        });
       } finally {
         setLoading(false);
       }
     };
 
-    if (pid) fetchIdolDetails();
-  }, [pid]);
-
-  useEffect(() => {
-    const fetchCategory = async () => {
-      const authToken = Cookies.get("adminAuthToken");
-      if (!authToken) {
-        console.error("No auth token found.");
-        return;
-      }
-
-      try {
-        const response = await axios.get(`${apiUrl}/api/products/category/fetch`, {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
-
-        if (!response.data) {
-          setAlert({
-            type: "error",
-            title: "Oops!",
-            message: "Something went wrong. Try again.",
-          });
-          return;
-        }
-
-        if (response.data) setCategory(response.data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        setAlert({
-          type: "error",
-          title: "Oops!",
-          message: "Failed to fetch categories.",
-        });
-      }
-    };
-
-    fetchCategory();
-  }, []);
+    fetchData();
+  }, [idolId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-    console.log(formData.category);
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData((prevState) => ({
-      ...prevState,
-      image: file,
-    }));
+    setFormData((prev) => ({ ...prev, image: file }));
+    setIdolPreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleUpdate = async () => {
+    //e.preventDefault();
     setLoading(true);
-
-    const authToken = Cookies.get("adminAuthToken");
-    const adminId = Cookies.get("adminId");
-
-    if (!adminId || !authToken) {
-      setAlert({
-        type: "error",
-        title: "Oops!",
-        message: "Authentication failed. Please log in again.",
-      });
-      setLoading(false);
-      return;
-    }
-
-    /*if (!formData.image) {
-      setAlert({ type: "error", title: "Oops!", message: "Please upload an image." });
-      setLoading(false);
-      return;
-    }*/
 
     try {
       const formDataToSend = new FormData();
@@ -136,59 +105,39 @@ const Addidol = () => {
       formDataToSend.append("category", formData.category);
       formDataToSend.append("size", formData.size);
       formDataToSend.append("price", formData.price);
-      formDataToSend.append("description", formData.reachDisciption);
+      formDataToSend.append("description", formData.description);
+      if (formData.image) formDataToSend.append("image", formData.image);
 
-      if (formData.image) {
-        formDataToSend.append("image", formData.image);
-      } else {
-        formDataToSend.append("image_url", formData.image_url);
-      }
-
-      console.log(formDataToSend.get("category"));
-      console.log(formDataToSend.get("title"));
-
-      const response = await axios.put(
-        `${apiUrl}/api/products/update/${pid}`,
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-
-      console.log(response.data);
-      setAlert({
-        type: "success",
-        title: "Successful!",
-        message: response.data.message,
+      await axios.put(`${apiUrl}/api/products/update/${idolId}`, formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      setFormData((prev) => ({
-        ...prev,
-        ...response.data.updatedProduct,
-        image_url: response.data.updatedProduct.thumbnail?.image_url || "",
-        category: response.data.updatedProduct.category.id,
-      }));
+      setAlert({
+        type: "success",
+        title: "Updated!",
+        message: "Idol updated successfully.",
+      });
+
+      setTimeout(() => navigate("/dashboard/idols"), 2000);
     } catch (error) {
+      console.error("Update failed:", error);
       setAlert({
         type: "error",
         title: "Oops!",
-        message: "Idol not updated. Try again.",
+        message: "Failed to update idol.",
       });
-      console.error("Error uploading product:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
-    if (!confirmDelete) return;
-
+    setLoading(true);
     try {
-      const response = await axios.delete(`${apiUrl}/api/products/delete/${pid}`);
+      const response = await axios.delete(`${apiUrl}/api/products/delete/${idolId}`);
 
       console.log(response.data);
       if (!response) {
@@ -203,7 +152,7 @@ const Addidol = () => {
         title: "Successful!",
         message: response.data.message,
       });
-
+      setLoading(false);
       navigate("/dashboard/idols");
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -214,72 +163,76 @@ const Addidol = () => {
       });
     }
   };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-6">
-      {alert && (
-        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 z-[1000]">
-          <AlertBox
-            type={alert.type}
-            title={alert.title}
-            message={alert.message}
-            onClick={() => setAlert(null)}
-          />
-        </div>
-      )}
+    <div>
+      {loading && <LoadingSpinner />}
+      <motion.div
+        className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-white py-10 px-4 md:px-6"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}>
+        <AnimatePresence>
+          {alert && (
+            <AlertBox
+              type={alert.type}
+              title={alert.title}
+              message={alert.message}
+              onClick={() => setAlert(null)}
+            />
+          )}
 
-      <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-300 relative">
-        {/* Delete Button */}
-        <button
-          onClick={handleDelete}
-          className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full shadow-lg hover:bg-red-600 transition flex items-center gap-1">
-          <Trash2 size={20} />
-          Delete
-        </button>
-
-        <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
-          Edit Idol Details
-        </h2>
-
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Idol Name</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter idol name"
+          {!alert && showDialog && (
+            <motion.div
+              key="dialog"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed inset-0 flex justify-center items-center bg-black/40 z-[999]">
+              <DialogBox
+                open={showDialog}
+                onClose={() => setShowDialog(false)}
+                onConfirm={handleDelete}
               />
-            </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
+        <div
+          //onSubmit={handleUpdate}
+          className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-8 space-y-6">
+          <h2 className="text-3xl font-extrabold text-yellow-500 mb-6 text-center">
+            Edit Idol
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-6">
+            <FormInput
+              icon={<FileText />}
+              label="Idol Name"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Enter idol name"
+            />
+            <FormInput
+              icon={<Layers />}
+              label="Stock"
+              name="stock"
+              type="number"
+              value={formData.stock}
+              onChange={handleChange}
+              placeholder="Stock quantity"
+            />
             <div>
-              <label className="block text-sm font-medium text-gray-700">Stock</label>
-              <input
-                type="number"
-                name="stock"
-                value={formData.stock}
-                onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter stock quantity"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Select Category
+              <label className="flex items-center gap-2 font-semibold text-gray-700">
+                <List className="w-4 h-4 text-yellow-500" />
+                Category
               </label>
               <select
                 name="category"
-                value={formData.category}
+                value={formData.category.id}
                 onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm">
-                <option value="">Select Category</option>
+                className="mt-1 w-full border rounded-lg px-3 py-2 shadow-sm outline-none"
+                required>
+                <option value="">Select a category</option>
                 {category.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -287,85 +240,123 @@ const Addidol = () => {
                 ))}
               </select>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Select Size (1 - 25 feet)
-              </label>
-              <select
-                name="size"
-                value={formData.size}
-                onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                {[...Array(25)].map((_, index) => (
-                  <option key={index} value={index + 1}>
-                    {index + 1} feet
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Price</label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter price"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Add Description
+            <FormInput
+              icon={<Ruler />}
+              label="Size"
+              name="size"
+              value={formData.size}
+              onChange={handleChange}
+              placeholder="Size (inches)"
+            />
+            <FormInput
+              icon={<IndianRupee />}
+              label="Price"
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder="Enter price"
+            />
+            <div className="sm:col-span-2">
+              <label className="flex items-center gap-2 font-semibold text-gray-700">
+                <StickyNote className="w-4 h-4 text-yellow-500" />
+                Description
               </label>
               <textarea
                 name="description"
-                value={formData.reachDisciption}
+                value={formData.description}
                 onChange={handleChange}
+                placeholder="Write idol description..."
+                rows="3"
+                className="mt-1 w-full border rounded-lg px-3 py-2 shadow-sm outline-none"
                 required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none"
-                placeholder="Enter description"
               />
             </div>
           </div>
-
-          <div className="space-y-6">
-            <img
-              src={formData.image_url}
-              alt="thumbnail"
-              className="aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
+          <div className="sm:col-span-2">
+            <label className="flex items-center gap-2 font-semibold text-gray-700">
+              <ImageIcon className="w-4 h-4 text-yellow-500" />
+              Idol Image
+            </label>
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-1 w-full"
             />
+            {idolPreview && (
+              <div className="mt-4">
+                <img
+                  src={idolPreview}
+                  alt="Idol Preview"
+                  className="w-64 h-80 object-cover rounded-2xl shadow-lg border border-yellow-300 transition duration-300 hover:scale-105"
+                />
+              </div>
+            )}
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Upload Image
-              </label>
-              <input
-                type="file"
-                name="image"
-                onChange={handleFileChange}
-                accept="image/*"
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none"
-              />
-            </div>
+          <div className="pt-4">
+            <div className="pt-4 flex gap-4">
+              {/* Delete Button */}
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setShowDialog(true)} // Show the dialog on delete button click
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-lg font-semibold bg-red-500 hover:bg-red-600 text-white shadow-lg">
+                <Trash2 className="w-5 h-5" />
+                Delete
+              </motion.button>
 
-            <div className="flex justify-center items-center">
-              <button
-                type="submit"
+              {/* Update Button */}
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={handleUpdate}
                 disabled={loading}
-                className="bg-gradient-to-r from-blue-500 to-green-500 text-white py-3 px-6 rounded-lg shadow-lg hover:opacity-90 focus:outline-none">
-                {loading ? "Submitting..." : "Submit"}
-              </button>
+                className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-lg font-semibold transition duration-300 ${
+                  loading
+                    ? "bg-yellow-300 text-yellow-800 cursor-not-allowed"
+                    : "bg-yellow-400 hover:bg-yellow-500 text-black shadow-lg"
+                }`}>
+                <Upload className="w-5 h-5" />
+                {loading ? "Updating..." : "Update Idol"}
+              </motion.button>
             </div>
           </div>
-        </form>
-      </div>
+        </div>
+      </motion.div>
+
+      {/* Dialog for delete confirmation */}
+      {showDialog && (
+        <motion.div
+          key="dialog"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          className="fixed inset-0 flex justify-center items-center bg-black/40 z-[999]">
+          <DialogBox
+            open={showDialog}
+            onClose={() => setShowDialog(false)}
+            onConfirm={handleDelete}
+          />
+        </motion.div>
+      )}
     </div>
   );
 };
 
-export default Addidol;
+const FormInput = ({ icon, label, ...props }) => (
+  <div>
+    <label className="flex items-center gap-2 font-semibold text-gray-700">
+      {React.cloneElement(icon, { className: "w-4 h-4 text-yellow-500" })}
+      {label}
+    </label>
+    <div className="mt-1 flex items-center gap-3 border rounded-lg px-3 py-2 shadow-sm">
+      {React.cloneElement(icon, { className: "w-4 h-4 text-gray-400" })}
+      <input {...props} className="w-full outline-none" required />
+    </div>
+  </div>
+);
+
+export default EditIdol;

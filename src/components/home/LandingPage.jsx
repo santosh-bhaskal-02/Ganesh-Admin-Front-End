@@ -6,8 +6,7 @@ const LandingPage = () => {
     <div className="relative -top-14">
       <section
         className="bg-cover bg-center min-h-screen flex items-center justify-center relative"
-        style={{ backgroundImage: "url('Hero.jpeg')" }}
-      >
+        style={{ backgroundImage: "url('Hero.jpeg')" }}>
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="relative z-10 text-center text-white px-4 md:px-0">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
@@ -16,14 +15,17 @@ const LandingPage = () => {
           <p className="mt-4 text-lg md:text-xl">
             Discover the Rich Culture and Heritage of Lord Ganesh
           </p>
+          <Link
+            to="/Dashboard"
+            className="mt-6 inline-block px-8 py-3 bg-orange-500 text-white text-lg font-semibold rounded-lg transition duration-300 hover:bg-orange-600">
+            Go to DashBoard
+          </Link>
         </div>
       </section>
 
       <section className="py-20 bg-gray-100" id="exhibits">
         <div className="container mx-auto text-center px-6">
-          <h2 className="text-3xl md:text-4xl font-semibold">
-            Featured Exhibits
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-semibold">Featured Exhibits</h2>
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
@@ -44,8 +46,7 @@ const LandingPage = () => {
             ].map((exhibit, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition"
-              >
+                className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
                 <h3 className="text-xl font-semibold">{exhibit.title}</h3>
                 <p className="mt-2 text-gray-600">{exhibit.description}</p>
               </div>
@@ -55,22 +56,17 @@ const LandingPage = () => {
       </section>
 
       <section className="py-20 bg-white text-center px-6" id="visit">
-        <h2 className="text-3xl md:text-4xl font-semibold">
-          Visitor Information
-        </h2>
+        <h2 className="text-3xl md:text-4xl font-semibold">Visitor Information</h2>
         <p className="mt-4 text-gray-700">
           Hours of Operation: Open daily from 10 AM to 6 PM
         </p>
         <p className="mt-2 text-gray-700">
           Admission Fees: Adults: $10 | Children under 12: Free
         </p>
-        <p className="mt-2 text-gray-700">
-          Location: 123 Ganesh Lane, City, State, ZIP
-        </p>
+        <p className="mt-2 text-gray-700">Location: 123 Ganesh Lane, City, State, ZIP</p>
         <Link
           to="#plan-your-visit"
-          className="mt-6 inline-block px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
-        >
+          className="mt-6 inline-block px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
           Plan Your Visit
         </Link>
       </section>
@@ -96,8 +92,7 @@ const LandingPage = () => {
         </div>
         <Link
           to="#all-events"
-          className="mt-6 inline-block px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
-        >
+          className="mt-6 inline-block px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
           See All Events
         </Link>
       </section>

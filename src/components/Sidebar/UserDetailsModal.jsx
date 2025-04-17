@@ -29,7 +29,7 @@ const UserDetailsPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState(null);
-
+  const [showDialog, setShowDialog] = useState(false);
   const authToken = Cookies.get("adminAuthToken");
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const UserDetailsPage = () => {
     fetchUser();
   }, [userId]);
 
-  const [showDialog, setShowDialog] = useState(false);
+ 
   const [redirect, setRedirect] = useState(false);
   const handleDelete = async () => {
     try {

@@ -1,16 +1,30 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import {
+  FileText,
+  Layers,
+  List,
+  Ruler,
+  IndianRupee,
+  ImageIcon,
+  StickyNote,
+  Upload,
+} from "lucide-react";
+import { motion } from "framer-motion";
+
 import AlertBox from "../Error/AlertBox";
 import ErrorPage from "../Error/ErrorPage";
+import LoadingSpinner from "../Error/LoadingSpinner";
+import { Sparkles } from "lucide-react";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
-const Addidol = () => {
+const AddIdol = () => {
   const [category, setCategory] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState(null);
-
+  const [idolPreview, setIdolPreview] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     stock: 1,
@@ -26,7 +40,7 @@ const Addidol = () => {
 
   if (!authToken) {
     console.error("No auth token found.");
-    return ErrorPage;
+    return <ErrorPage />;
   }
 
   useEffect(() => {
@@ -57,12 +71,13 @@ const Addidol = () => {
           title: "Oops!",
           message: "Failed to fetch categories.",
         });
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCategory();
   }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -78,6 +93,7 @@ const Addidol = () => {
       ...prevState,
       image: file,
     }));
+    setIdolPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e) => {
@@ -86,6 +102,11 @@ const Addidol = () => {
 
     if (!formData.image) {
       setAlert({ type: "error", title: "Oops!", message: "Please upload an image." });
+      setLoading(false);
+      return;
+    }
+    if (!formData.category) {
+      setAlert({ type: "error", title: "Oops!", message: "Please select a category." });
       setLoading(false);
       return;
     }
@@ -129,64 +150,83 @@ const Addidol = () => {
       setLoading(false);
     }
   };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-6">
-      {alert && (
-        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50">
+    <div>
+      {loading && <LoadingSpinner />}
+      <motion.div
+        className="min-h-screenbg-gradient-to-br from-blue-400 to-yellow-100 py-10 px-4 md:px-6"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}>
+        {alert && (
           <AlertBox
             type={alert.type}
             title={alert.title}
             message={alert.message}
             onClick={() => setAlert(null)}
           />
-        </div>
-      )}
+        )}
 
-      <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-300">
-        <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
-          Add New Idol
-        </h2>
-
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-yellow-200 p-6 sm:p-8 space-y-6">
+          <h2 className="text-4xl font-bold text-center text-purple-800 mb-8 flex items-center justify-center gap-3">
+            <Sparkles className="w-8 h-8 text-yellow-400" />
+            Add New Idol
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-6">
+            {/* Idol Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Idol Name</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter idol name"
-              />
+              <label className="flex items-center gap-2 font-semibold text-gray-700">
+                <FileText className="w-4 h-4 text-yellow-500" />
+                Idol Name
+              </label>
+              <div className="mt-1 flex items-center gap-3 border rounded-lg px-3 py-2 shadow-sm">
+                <FileText className="w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  placeholder="Enter idol name"
+                  className="w-full outline-none"
+                  required
+                />
+              </div>
             </div>
 
+            {/* Stock */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Stock</label>
-              <input
-                type="number"
-                name="stock"
-                value={formData.stock}
-                onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter stock quantity"
-              />
+              <label className="flex items-center gap-2 font-semibold text-gray-700">
+                <Layers className="w-4 h-4 text-yellow-500" />
+                Stock
+              </label>
+              <div className="mt-1 flex items-center gap-3 border rounded-lg px-3 py-2 shadow-sm">
+                <Layers className="w-4 h-4 text-gray-400" />
+                <input
+                  type="number"
+                  name="stock"
+                  value={formData.stock}
+                  onChange={handleChange}
+                  placeholder="Stock quantity"
+                  className="w-full outline-none"
+                  required
+                />
+              </div>
             </div>
 
+            {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Select Category
+              <label className="flex items-center gap-2 font-semibold text-gray-700">
+                <List className="w-4 h-4 text-yellow-500" />
+                Category
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                <option value="">Select Category</option>
+                className="mt-1 w-full border rounded-lg px-3 py-2 shadow-sm outline-none"
+                required>
                 {category.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -195,80 +235,108 @@ const Addidol = () => {
               </select>
             </div>
 
+            {/* Size */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Select Size (1 - 25 feet)
+              <label className="flex items-center gap-2 font-semibold text-gray-700">
+                <Ruler className="w-4 h-4 text-yellow-500" />
+                Size
               </label>
-              <select
-                name="size"
-                value={formData.size}
-                onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                {[...Array(25)].map((_, index) => (
-                  <option key={index} value={index + 1}>
-                    {index + 1} feet
-                  </option>
-                ))}
-              </select>
+              <div className="mt-1 flex items-center gap-3 border rounded-lg px-3 py-2 shadow-sm">
+                <Ruler className="w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  name="size"
+                  value={formData.size}
+                  onChange={handleChange}
+                  placeholder="Size (inches)"
+                  className="w-full outline-none"
+                  required
+                />
+              </div>
             </div>
 
+            {/* Price */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Price</label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter price"
-              />
+              <label className="flex items-center gap-2 font-semibold text-gray-700">
+                <IndianRupee className="w-4 h-4 text-yellow-500" />
+                Price
+              </label>
+              <div className="mt-1 flex items-center gap-3 border rounded-lg px-3 py-2 shadow-sm">
+                <IndianRupee className="w-4 h-4 text-gray-400" />
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  placeholder="Enter price"
+                  className="w-full outline-none"
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Add Description
+            {/* Description */}
+            <div className="sm:col-span-2">
+              <label className="flex items-center gap-2 font-semibold text-gray-700">
+                <StickyNote className="w-4 h-4 text-yellow-500" />
+                Description
               </label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
+                placeholder="Write idol description..."
+                rows="3"
+                className="mt-1 w-full border rounded-lg px-3 py-2 shadow-sm outline-none"
                 required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none"
-                placeholder="Enter description"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Upload Image
-              </label>
-              <input
-                type="file"
-                name="image"
-                onChange={handleFileChange}
-                accept="image/*"
-                required
-                className="mt-1 px-4 py-3 w-full border rounded-lg shadow-sm focus:outline-none"
-              />
-            </div>
-
-            <div className="flex justify-center items-center">
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-gradient-to-r from-blue-500 to-green-500 text-white py-3 px-6 rounded-lg shadow-lg hover:opacity-90 focus:outline-none">
-                {loading ? "Submitting..." : "Submit"}
-              </button>
             </div>
           </div>
+
+          {/* Image Upload */}
+          <div className="sm:col-span-2">
+            <label className="flex items-center gap-2 font-semibold text-gray-700">
+              <ImageIcon className="w-4 h-4 text-yellow-500" />
+              Idol Image
+            </label>
+
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-1 w-full"
+              required
+            />
+            {idolPreview && (
+              <img
+                src={idolPreview}
+                alt="Idol Preview"
+                className="mt-3 w-32 h-32 object-cover rounded-lg shadow"
+              />
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <div className="pt-4">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              disabled={loading}
+              type="submit"
+              className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-lg font-semibold transition duration-300 ${
+                loading
+                  ? "bg-yellow-300 text-yellow-800 cursor-not-allowed"
+                  : "bg-yellow-400 hover:bg-yellow-500 text-black shadow-lg"
+              }`}>
+              <Upload className="w-5 h-5" />
+              {loading ? "Submitting..." : "Add Idol"}
+            </motion.button>
+          </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };
 
-export default Addidol;
+export default AddIdol;

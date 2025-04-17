@@ -1,34 +1,54 @@
 import React from "react";
 
 const DeliverySkeleton = () => {
+  const rows = Array.from({ length: 5 });
+
   return (
-    <>
-      {[...Array(5)].map((_, idx) => (
-        <tr key={idx} className="animate-pulse border-b">
-          <td className="px-6 py-4">
-            <div className="h-4 w-24 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full shadow-inner"></div>
-          </td>
-          <td className="px-6 py-4">
-            <div className="h-4 w-32 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full shadow-inner"></div>
-          </td>
-          <td className="px-6 py-4">
-            <div className="space-y-2">
-              <div className="h-3 w-40 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full shadow-inner"></div>
-              <div className="h-3 w-32 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full shadow-inner"></div>
-            </div>
-          </td>
-          <td className="px-6 py-4">
-            <div className="h-6 w-20 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-full shadow-inner"></div>
-          </td>
-          <td className="px-6 py-4">
-            <div className="h-8 w-24 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-md shadow"></div>
-          </td>
-          <td className="px-6 py-4">
-            <div className="h-8 w-28 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-md shadow"></div>
-          </td>
-        </tr>
-      ))}
-    </>
+    <div className="overflow-x-auto">
+      <table className="min-w-full table-auto bg-white shadow-lg rounded-lg animate-pulse">
+        <thead className="bg-gradient-to-r from-blue-400 to-indigo-500 text-white rounded-t-lg">
+          <tr>
+            <th className="px-6 py-3 text-left text-lg font-semibold rounded-l-lg">
+              Order ID
+            </th>
+            <th className="px-6 py-3 text-left text-lg font-semibold">Customer</th>
+            <th className="px-6 py-3 text-left text-lg font-semibold">Address</th>
+            <th className="px-6 py-3 text-left text-lg font-semibold">Status</th>
+            <th className="px-6 py-3 text-left text-lg font-semibold">Update</th>
+            <th className="px-6 py-3 text-left text-lg font-semibold rounded-r-lg">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((_, index) => (
+            <tr key={index} className="hidden md:table-row border-b">
+              <td className="px-6 py-4">
+                <div className="h-4 w-32 bg-gray-300 rounded-md" />
+              </td>
+              <td className="px-6 py-4">
+                <div className="h-4 w-40 bg-gray-300 rounded-md" />
+              </td>
+              <td className="px-6 py-4">
+                <div className="space-y-1">
+                  <div className="h-3 w-56 bg-gray-300 rounded-md" />
+                  <div className="h-3 w-40 bg-gray-300 rounded-md" />
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <div className="h-6 w-20 bg-gray-300 rounded-full" />
+              </td>
+              <td className="px-6 py-4">
+                <div className="h-8 w-28 bg-gray-300 rounded-md" />
+              </td>
+              <td className="px-6 py-4">
+                <div className="h-8 w-24 bg-gray-300 rounded-lg" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

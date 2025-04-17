@@ -142,7 +142,7 @@ const Deliveries = () => {
         </div>
       )}
 
-      <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-8 tracking-wide">
+      <h1 className="text-4xl font-bold text-center text-blue-500 mb-8 ">
         Delivery Management
       </h1>
 
@@ -166,7 +166,9 @@ const Deliveries = () => {
           ))}
         </select>
       </div>
-      {filteredOrders.length == 0 ? (
+      {loading ? (
+        <DeliverySkeleton />
+      ) : filteredOrders.length == 0 ? (
         <NoOrder />
       ) : (
         <>
@@ -188,112 +190,49 @@ const Deliveries = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
-                  <DeliverySkeleton />
-                ) : (
-                  filteredOrders.map((order) => (
-                    <tr
-                      key={order._id}
-                      className="hidden md:table-row border-b hover:bg-blue-50">
-                      <td className="px-6 py-4 text-gray-800 rounded-l-lg">
-                        {order._id}
-                      </td>
-                      <td className="px-6 py-4 text-gray-600 flex items-center gap-2">
-                        <PersonIcon fontSize="small" />
-                        {order.shipAddress?.firstName} {order.shipAddress?.lastName}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
-                        {order.shipAddress?.address1}, {order.shipAddress?.city},<br />
-                        {order.shipAddress?.state} - {order.shipAddress?.zip}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs ${getStatusStyles(
-                            order.status
-                          )}`}>
-                          {order.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <select
-                          value={order.status}
-                          onChange={(e) => updateStatus(order._id, e.target.value)}
-                          className="p-2 rounded-md border border-gray-300 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
-                          {statusOptions.map((statusOption) => (
-                            <option key={statusOption} value={statusOption}>
-                              {statusOption}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="px-6 py-4 rounded-r-lg">
-                        <Link
-                          to={`/dashboard/users/user/order_details/${order._id}`}
-                          className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm font-medium shadow">
-                          <ShoppingCartIcon fontSize="small" />
-                          View Order
-                        </Link>
-                      </td>
-                    </tr>
-                  ))
-                )}
-
-                {/* Mobile View Cards */}
-                {loading ? (
-                  <LoadingSpinner />
-                ) : (
-                  filteredOrders.map((order) => (
-                    <tr key={order._id} className="md:hidden">
-                      <td colSpan={6} className="py-4">
-                        <div className="bg-white shadow-md rounded-lg p-4 space-y-3">
-                          <div className="text-sm font-semibold text-gray-700">
-                            <span className="block">Order ID:</span>
-                            <span className="text-blue-700 break-words">{order._id}</span>
-                          </div>
-
-                          <div className="flex items-center text-sm text-gray-600">
-                            <PersonIcon fontSize="small" className="mr-2 text-blue-600" />
-                            {order.shipAddress?.firstName} {order.shipAddress?.lastName}
-                          </div>
-
-                          <div className="text-sm text-gray-600">
-                            {order.shipAddress?.address1}, {order.shipAddress?.city},{" "}
-                            {order.shipAddress?.state} - {order.shipAddress?.zip}
-                          </div>
-
-                          <div className="text-sm">
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs ${getStatusStyles(
-                                order.status
-                              )}`}>
-                              {order.status}
-                            </span>
-                          </div>
-
-                          <div>
-                            <select
-                              value={order.status}
-                              onChange={(e) => updateStatus(order._id, e.target.value)}
-                              className="w-full p-2 mt-1 rounded-md border border-gray-300 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
-                              {statusOptions.map((statusOption) => (
-                                <option key={statusOption} value={statusOption}>
-                                  {statusOption}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-
-                          <Link
-                            to={`/dashboard/users/user/order_details/${order._id}`}
-                            className="flex items-center gap-2 justify-center px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm font-medium shadow">
-                            <ShoppingCartIcon fontSize="small" />
-                            View Order
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                {filteredOrders.map((order) => (
+                  <tr
+                    key={order._id}
+                    className="hidden md:table-row border-b hover:bg-blue-50">
+                    <td className="px-6 py-4 text-gray-800 rounded-l-lg">{order._id}</td>
+                    <td className="px-6 py-4 text-gray-600 flex items-center gap-2">
+                      <PersonIcon fontSize="small" />
+                      {order.shipAddress?.firstName} {order.shipAddress?.lastName}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {order.shipAddress?.address1}, {order.shipAddress?.city},<br />
+                      {order.shipAddress?.state} - {order.shipAddress?.zip}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs ${getStatusStyles(
+                          order.status
+                        )}`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={order.status}
+                        onChange={(e) => updateStatus(order._id, e.target.value)}
+                        className="p-2 rounded-md border border-gray-300 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        {statusOptions.map((statusOption) => (
+                          <option key={statusOption} value={statusOption}>
+                            {statusOption}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="px-6 py-4 rounded-r-lg">
+                      <Link
+                        to={`/dashboard/users/user/order_details/${order._id}`}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm font-medium shadow">
+                        <ShoppingCartIcon fontSize="small" />
+                        View Order
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
