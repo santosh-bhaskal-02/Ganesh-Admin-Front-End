@@ -1,4 +1,5 @@
-import { CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/solid";
+import ExclamationCircleIcon from "@heroicons/react/24/solid/ExclamationCircleIcon";
+import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 
 const AlertBox = ({ type, title, message, onClick }) => {
   return (

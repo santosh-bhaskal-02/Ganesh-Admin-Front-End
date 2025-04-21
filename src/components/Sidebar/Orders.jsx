@@ -21,8 +21,8 @@ const Orders = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [alert, setAlert] = useState(null);
+  const [orderStatus, setOrderStatus] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchOrders = async () => {
       const authToken = Cookies.get("adminAuthToken");
@@ -32,17 +32,23 @@ const Orders = () => {
       }
 
       try {
-        const response = await axios.get(`${apiUrl}/api/products/orders/allorders`, {
-          headers: { Authorization: `Bearer ${authToken}` },
-        });
+        const [ResOrders, ResOrderStatus] = await Promise.all([
+          axios.get(`${apiUrl}/api/products/orders/allorders`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }),
+          axios.get(`${apiUrl}/api/products/orders/fetch/status`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }),
+        ]);
 
-        if (!Array.isArray(response.data)) {
+        if (!Array.isArray(ResOrders.data)) {
           console.error("Unexpected API response:", response.data);
           setOrders([]);
           return;
         }
 
-        setOrders(response.data);
+        setOrders(ResOrders.data);
+        setOrderStatus(ResOrderStatus.data.orderStatus);
       } catch (error) {
         console.error("Error fetching orders:", error);
         setAlert({
@@ -57,6 +63,8 @@ const Orders = () => {
 
     fetchOrders();
   }, []);
+
+  console.log(orderStatus);
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch = order._id.includes(searchQuery);
@@ -106,13 +114,12 @@ const Orders = () => {
           className="p-4 border border-indigo-300 rounded-lg w-full md:w-1/3 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-lg"
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}>
-          <option value="">Filter by Status</option>
-          <option value="Awaiting for Payment">Awaiting for Payment</option>
-          <option value="Payment Successful">Payment Successful</option>
-          <option value="Shipped">Shipped</option>
-          <option value="Out for Delivery">Out for Delivery</option>
-          <option value="Delivered">Delivered</option>
-          <option value="Cancelled">Cancelled</option>
+          <option value="">All</option>
+          {orderStatus.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
         </select>
       </div>
 

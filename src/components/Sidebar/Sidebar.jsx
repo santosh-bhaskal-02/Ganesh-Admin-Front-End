@@ -11,7 +11,10 @@ import {
   X,
   Layers,
   Package,
+  Percent,
+  Crown,
 } from "lucide-react";
+
 import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
@@ -81,11 +84,24 @@ const Sidebar = () => {
             isOpen={isSidebarOpen}
           />
           <SidebarItem
+            to="/dashboard/Tax_DeliveryCharges"
+            icon={<Percent size={18} />}
+            text="Delivery & Tax"
+            isOpen={isSidebarOpen}
+          />
+          <SidebarItem
+            to="/dashboard/Custom-idol"
+            icon={<Crown size={18} />}
+            text="Custom Idol"
+            isOpen={isSidebarOpen}
+          />
+          <SidebarItem
             to="/dashboard/Notifications"
             icon={<Bell size={20} />}
             text="Notifications"
             isOpen={isSidebarOpen}
           />
+
           <SidebarItem
             to="/dashboard/Settings"
             icon={<Settings size={20} />}

@@ -11,7 +11,7 @@ import NoUsersFound from "./NoUserFound";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
-const Users = () => {
+const UsersList = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -134,4 +134,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default UsersList;

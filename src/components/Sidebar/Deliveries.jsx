@@ -22,26 +22,34 @@ const Deliveries = () => {
 
   const [loading, setLoading] = useState(true);
   const [statusloading, setStatusLoading] = useState(false);
+  const [orderStatus, setOrderStatus] = useState([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const token = Cookies.get("adminAuthToken");
-      if (!token) {
+      const authToken = Cookies.get("adminAuthToken");
+      if (!authToken) {
         console.error("Unauthorized");
         return;
       }
 
       try {
-        const response = await axios.get(`${apiUrl}/api/products/orders/allorders`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const [ResOrders, ResOrderStaus] = await Promise.all([
+          axios.get(`${apiUrl}/api/products/orders/allorders`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }),
+          axios.get(`${apiUrl}/api/products/orders/fetch/status`, {
+            headers: { Authorization: `Bearer ${authToken}` },
+          }),
+        ]);
 
-        if (!Array.isArray(response.data)) {
+        if (!Array.isArray(ResOrders.data)) {
           setOrders([]);
           return;
         }
 
-        setOrders(response.data);
+        setOrders(ResOrders.data);
+        setOrderStatus(ResOrderStaus.data.orderStatus);
+        console.log(orderStatus);
       } catch (error) {
         console.error("Fetch failed:", error);
         setAlert({
@@ -92,15 +100,14 @@ const Deliveries = () => {
     return matchSearch && matchStatus;
   });
 
-  const statusOptions = [
+  /*const statusOptions = [
     "Awaiting for Payment",
     "Payment Successful",
     "Shipped",
     "Out for Delivery",
     "Delivered",
     "Cancelled",
-  ];
-
+  ];*/
   const getStatusStyles = (status) => {
     switch (status) {
       case "Delivered":
@@ -159,7 +166,9 @@ const Deliveries = () => {
           className="p-4 border border-blue-300 rounded-lg w-full md:w-1/3 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}>
-          {statusOptions.map((statusOption) => (
+          <option value="">All</option>
+
+          {orderStatus.map((statusOption) => (
             <option key={statusOption} value={statusOption}>
               {statusOption}
             </option>
@@ -216,7 +225,7 @@ const Deliveries = () => {
                         value={order.status}
                         onChange={(e) => updateStatus(order._id, e.target.value)}
                         className="p-2 rounded-md border border-gray-300 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        {statusOptions.map((statusOption) => (
+                        {orderStatus.map((statusOption) => (
                           <option key={statusOption} value={statusOption}>
                             {statusOption}
                           </option>

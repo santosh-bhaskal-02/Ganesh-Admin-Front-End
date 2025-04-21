@@ -16,7 +16,6 @@ import { motion } from "framer-motion";
 import AlertBox from "../Error/AlertBox";
 import ErrorPage from "../Error/ErrorPage";
 import LoadingSpinner from "../Error/LoadingSpinner";
-import { Sparkles } from "lucide-react";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -154,7 +153,7 @@ const AddIdol = () => {
     <div>
       {loading && <LoadingSpinner />}
       <motion.div
-        className="min-h-screenbg-gradient-to-br from-blue-400 to-yellow-100 py-10 px-4 md:px-6"
+        className="min-h-screen bg-gradient-to-br from-yellow-200 via-blue-100 to-blue-200 py-10 px-4 md:px-6"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}>
@@ -171,7 +170,6 @@ const AddIdol = () => {
           onSubmit={handleSubmit}
           className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-yellow-200 p-6 sm:p-8 space-y-6">
           <h2 className="text-4xl font-bold text-center text-purple-800 mb-8 flex items-center justify-center gap-3">
-            <Sparkles className="w-8 h-8 text-yellow-400" />
             Add New Idol
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">

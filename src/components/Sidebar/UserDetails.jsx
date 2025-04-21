@@ -23,7 +23,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
-const UserDetailsPage = () => {
+const UserDetails = () => {
   const [user, setUser] = useState({});
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -52,7 +52,6 @@ const UserDetailsPage = () => {
     fetchUser();
   }, [userId]);
 
- 
   const [redirect, setRedirect] = useState(false);
   const handleDelete = async () => {
     try {
@@ -243,7 +242,7 @@ const UserDetailsPage = () => {
                       </h3>
                       <p className="text-gray-600 flex items-center gap-2 mt-1 text-sm">
                         <LocalShippingIcon className="text-blue-500" fontSize="small" />
-                        Delivery Date: {new Date(order.deliveryDate).toLocaleDateString()}
+                        Delivery Date: {new Date(order.deliveredAt).toLocaleDateString()}
                       </p>
                       <p className="text-gray-600 flex items-center gap-2 mt-1 text-sm">
                         <ReceiptLongIcon className="text-yellow-600" fontSize="small" />
@@ -284,4 +283,4 @@ const UserDetailsPage = () => {
   );
 };
 
-export default UserDetailsPage;
+export default UserDetails;
