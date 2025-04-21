@@ -3,7 +3,7 @@ import CheckCircleIcon from "@heroicons/react/24/solid/CheckCircleIcon";
 
 const AlertBox = ({ type, title, message, onClick }) => {
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-black/30 backdrop-blur-sm">
+    <div className="fixed inset-0 flex justify-center items-center bg-black/30 backdrop-blur-sm z-50">
       <div
         className={`relative p-6 rounded-2xl shadow-xl w-96 text-center transform transition-all scale-95 hover:scale-100 ${
           type === "success"
