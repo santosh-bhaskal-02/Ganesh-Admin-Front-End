@@ -53,6 +53,7 @@ const UserDetails = () => {
   }, [userId]);
 
   const [redirect, setRedirect] = useState(false);
+
   const handleDelete = async () => {
     try {
       await axios.delete(`${apiUrl}/api/users/login/delete/${userId}`, {
