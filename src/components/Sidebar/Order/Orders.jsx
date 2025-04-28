@@ -11,8 +11,8 @@ import {
   Cancel as CancelIcon,
 } from "@mui/icons-material";
 
-import OrderSkeleton from "../Skeleton/OrderSkeleton";
-import NoOrder from "../Error/NoOrder";
+import OrderSkeleton from "../../Skeleton/OrderSkeleton";
+import NoOrder from "../../Error/NoOrder";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
@@ -172,7 +172,7 @@ const Orders = () => {
                     <td className="px-6 py-4 text-gray-700">₹{order.totalPrice}</td>
                     <td className="px-6 py-4 rounded-r-lg">
                       <Link
-                        to={`/dashboard/users/user/order_details/${order._id}`}
+                        to={`/dashboard/users/user/order-details/${order._id}`}
                         className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm font-medium shadow">
                         <ShoppingCartIcon fontSize="small" />
                         View Order

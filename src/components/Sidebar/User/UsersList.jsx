@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Eye } from "lucide-react";
-import ErrorPage from "../Error/ErrorPage";
+import ErrorPage from "../../Error/ErrorPage";
 import NoUsersFound from "./NoUserFound";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;

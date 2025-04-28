@@ -16,7 +16,7 @@ const LandingPage = () => {
             Discover the Rich Culture and Heritage of Lord Ganesh
           </p>
           <Link
-            to="/Dashboard"
+            to="/dashboard"
             className="mt-6 inline-block px-8 py-3 bg-orange-500 text-white text-lg font-semibold rounded-lg transition duration-300 hover:bg-orange-600">
             Go to DashBoard
           </Link>

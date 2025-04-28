@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import ErrorPage from "../Error/ErrorPage";
+import ErrorPage from "../../../Error/ErrorPage";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import AlertBox from "../Error/AlertBox";
+import AlertBox from "../../Error/AlertBox";
 import { Pencil, Trash2 } from "lucide-react";
-import ErrorPage from "../Error/ErrorPage";
-import LoadingSpinner from "../Error/LoadingSpinner";
-import NoCategory from "../Category/NoCategory";
-import CategorySkeleton from "../Category/CategorySkeleton";
-import DialogBox from "../Error/DialogBox";
+import ErrorPage from "../../Error/ErrorPage";
+import LoadingSpinner from "../../Error/LoadingSpinner";
+import NoCategory from "./NoCategory";
+import CategorySkeleton from "../../Skeleton/CategorySkeleton";
+import DialogBox from "../../Error/DialogBox";
 import { AnimatePresence, motion } from "framer-motion";
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 

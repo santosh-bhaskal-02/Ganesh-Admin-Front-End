@@ -53,13 +53,13 @@ const Sidebar = () => {
             isOpen={isSidebarOpen}
           />
           <SidebarItem
-            to="/dashboard/Addidol"
+            to="/dashboard/add-idol"
             icon={<SquarePlus size={20} />}
             text="Add New Idol"
             isOpen={isSidebarOpen}
           />
           <SidebarItem
-            to="/dashboard/AddCategory"
+            to="/dashboard/add-category"
             icon={<Layers size={20} />}
             text="Add Category"
             isOpen={isSidebarOpen}
@@ -72,38 +72,38 @@ const Sidebar = () => {
             isOpen={isSidebarOpen}
           />
           <SidebarItem
-            to="/dashboard/Orders"
+            to="/dashboard/orders"
             icon={<PackageCheck size={20} />}
             text="Orders"
             isOpen={isSidebarOpen}
           />
           <SidebarItem
-            to="/dashboard/Deliveries"
+            to="/dashboard/deliveries"
             icon={<Truck size={20} />}
             text="Deliveries"
             isOpen={isSidebarOpen}
           />
           <SidebarItem
-            to="/dashboard/Tax_DeliveryCharges"
+            to="/dashboard/delivery-charges"
             icon={<Percent size={18} />}
             text="Delivery & Tax"
             isOpen={isSidebarOpen}
           />
           <SidebarItem
-            to="/dashboard/Custom-idol"
+            to="/dashboard/custom-idol"
             icon={<Crown size={18} />}
             text="Custom Idol"
             isOpen={isSidebarOpen}
           />
           <SidebarItem
-            to="/dashboard/Notifications"
+            to="/dashboard/notifications"
             icon={<Bell size={20} />}
             text="Notifications"
             isOpen={isSidebarOpen}
           />
 
           <SidebarItem
-            to="/dashboard/Settings"
+            to="/dashboard/settings"
             icon={<Settings size={20} />}
             text="Settings"
             isOpen={isSidebarOpen}

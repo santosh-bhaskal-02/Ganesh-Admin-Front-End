@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { motion } from "framer-motion";
-import { IdolContext } from "../Context/IdolContext";
+import { IdolContext } from "../../Context/IdolContext";
 import { useNavigate } from "react-router-dom";
 import { Pencil, Eye, X } from "lucide-react";
 import axios from "axios";
@@ -14,7 +14,7 @@ function IdolCard({ id, thumbnail, title, category, price }) {
   const [imageSrc, setImageSrc] = useState("");
 
   const editIdol = () => {
-    navigate(`/dashboard/edit_Idol/${id}`);
+    navigate(`/dashboard/edit-idol/${id}`);
   };
 
   const handleViewMore = async (id) => {

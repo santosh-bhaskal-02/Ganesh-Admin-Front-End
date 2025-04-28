@@ -14,11 +14,11 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import LoadingSpinner from "../Error/LoadingSpinner";
-import UserSkeleton from "../Error/UserSkeleton";
-import NoOrder from "../Error/NoOrder";
-import AlertBox from "../Error/AlertBox";
-import DialogBox from "../Error/DialogBox";
+import LoadingSpinner from "../../Error/LoadingSpinner";
+import UserSkeleton from "../../Skeleton/UserSkeleton";
+import NoOrder from "../../Error/NoOrder";
+import AlertBox from "../../Error/AlertBox";
+import DialogBox from "../../Error/DialogBox";
 import { AnimatePresence, motion } from "framer-motion";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
@@ -186,7 +186,7 @@ const UserDetails = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => navigate(`/dashboard/users/user/edit_address/${userId}`)}
+            onClick={() => navigate(`/dashboard/users/user/edit-address/${userId}`)}
             className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600 transition-all text-sm font-semibold">
             <EditIcon fontSize="small" />
             Edit User
@@ -257,7 +257,7 @@ const UserDetails = () => {
                         {order.orderItems[0]?.product?.price}
                       </p>
                       <Link
-                        to={`/dashboard/users/user/order_details/${order._id}`}
+                        to={`/dashboard/users/user/order-details/${order._id}`}
                         className="mt-2 inline-block px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 text-sm font-medium shadow">
                         View Order
                       </Link>

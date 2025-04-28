@@ -3,9 +3,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Eye } from "lucide-react";
 import Cookies from "js-cookie";
-import LoadingSpinner from "../Error/LoadingSpinner";
+
 import { motion } from "framer-motion";
-import SkeletonCustomForm from "./SkeletonCustomForm";
+import SkeletonCustomForm from "../../Skeleton/SkeletonCustomForm";
 import NoCustomFormList from "./NoCustomForm";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;

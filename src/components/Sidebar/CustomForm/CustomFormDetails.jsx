@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import LoadingSpinner from "../Error/LoadingSpinner";
+import LoadingSpinner from "../../Error/LoadingSpinner";
 import {
   UserIcon,
   MailIcon,
@@ -16,8 +16,8 @@ import {
   XCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import DialogBox from "../Error/DialogBox";
-import AlertBox from "../Error/AlertBox";
+import DialogBox from "../../Error/DialogBox";
+import AlertBox from "../../Error/AlertBox";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 

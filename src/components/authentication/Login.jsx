@@ -9,7 +9,7 @@ import LoadingSpinner from "../Error/LoadingSpinner";
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 // ... All previous imports remain same
 
-const LoginForm = () => {
+const Login = () => {
   const navigate = useNavigate();
   const { setSignIn } = useContext(AuthContext);
 
@@ -73,7 +73,7 @@ const LoginForm = () => {
         Cookies.set("adminId", userId, { secure: true, sameSite: "Strict" });
 
         setSignIn(true);
-        navigate("/Dashboard");
+        navigate("/dashboard");
       }
     } catch (err) {
       setAlert({
@@ -183,4 +183,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default Login;

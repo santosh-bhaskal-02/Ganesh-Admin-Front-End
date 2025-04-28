@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 import Navbar from "./components/Navbar/Heading.jsx";
 import Footer from "./components/Footer/Footer.jsx";
-import Dashboard from "./components/Dashboard/Dashboard.jsx";
+import SidebarRoutes from "./components/AdminController/SidebarRoutes.jsx";
 import Login from "./components/Authentication/Login.jsx";
 import SignUp from "./components/Authentication/SignUp.jsx";
 import ForgotPassword from "./components/Authentication/ForgotPassword.jsx";
@@ -19,12 +19,11 @@ function App() {
           <div className="w-full">
             <Routes>
               <Route path="/" element={<LandingPage />} />
-              <Route path="/Dashboard/*" element={<Dashboard />} />
-              <Route path="/Login" element={<Login />} />
-              <Route path="/SignUp" element={<SignUp />} />
-              <Route path="/ForgotPassword" element={<ForgotPassword />} />
+              <Route path="/dashboard/*" element={<SidebarRoutes />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signUp" element={<SignUp />} />
+              <Route path="/forgot_password" element={<ForgotPassword />} />
             </Routes>
-
             <Footer />
           </div>
         </IdolProvider>

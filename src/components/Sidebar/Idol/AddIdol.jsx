@@ -13,9 +13,9 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-import AlertBox from "../Error/AlertBox";
-import ErrorPage from "../Error/ErrorPage";
-import LoadingSpinner from "../Error/LoadingSpinner";
+import AlertBox from "../../Error/AlertBox";
+import ErrorPage from "../../Error/ErrorPage";
+import LoadingSpinner from "../../Error/LoadingSpinner";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import AlertBox from "../Error/AlertBox";
-import LoadingSpinner from "../Error/LoadingSpinner";
-import DialogBox from "../Error/DialogBox";
+import AlertBox from "../../Error/AlertBox";
+import LoadingSpinner from "../../Error/LoadingSpinner";
+import DialogBox from "../../Error/DialogBox";
 import { Truck, Percent, Save } from "lucide-react";
-import ErrorPage from "../Error/ErrorPage";
+import ErrorPage from "../../Error/ErrorPage";
 import { motion, AnimatePresence } from "framer-motion";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;

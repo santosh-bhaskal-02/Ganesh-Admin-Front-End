@@ -15,7 +15,7 @@ import AlertBox from "../Error/AlertBox";
 import LoadingSpinner from "../Error/LoadingSpinner";
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 
-const SignupForm = () => {
+const Signup = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -378,4 +378,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+export default Signup;

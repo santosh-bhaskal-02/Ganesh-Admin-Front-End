@@ -13,10 +13,10 @@ import {
   Trash2,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import DialogBox from "../Error/DialogBox";
-import AlertBox from "../Error/AlertBox";
-import ErrorPage from "../Error/ErrorPage";
-import LoadingSpinner from "../Error/LoadingSpinner";
+import DialogBox from "../../Error/DialogBox";
+import AlertBox from "../../Error/AlertBox";
+import ErrorPage from "../../Error/ErrorPage";
+import LoadingSpinner from "../../Error/LoadingSpinner";
 import { useParams, useNavigate } from "react-router-dom";
 
 const apiUrl = import.meta.env.VITE_BACK_END_URL;

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import LoadingSpinner from "../Error/LoadingSpinner";
+import LoadingSpinner from "../../Error/LoadingSpinner";
 // import SignInErrorPage from "../404ErrorPage/SignInErrorPage";
-import ErrorPage from "../Error/ErrorPage";
-import AlertBox from "../Error/AlertBox";
+import ErrorPage from "../../Error/ErrorPage";
+import AlertBox from "../../Error/AlertBox";
 import {
   CheckCircle,
   LocalShipping,
@@ -237,18 +237,26 @@ function OrderDetails() {
             <div className="flex flex-col p-6 border-b md:flex-row gap-6">
               <img
                 className="w-32 h-32 object-cover rounded-lg shadow-lg border-2 border-blue-300"
-                src={item.product.thumbnail.image_url}
+                src={
+                  item.product?.thumbnail?.image_url ??
+                  item.customProduct?.thumbnail?.image_url
+                }
                 alt="Product"
               />
               <div className="flex-1 space-y-2">
                 <h3 className="text-2xl font-semibold text-blue-800 hover:text-blue-600 transition-all duration-300">
-                  {item.product.title}
+                  {item?.product?.title ?? "Customized Idol"}
                 </h3>
                 <p className="text-gray-600 flex items-center gap-1">
                   <CurrencyRupeeIcon fontSize="small" className="text-green-500" />
-                  {item.product.price}
+                  {item?.product?.price ?? order.totalPrice.toFixed(2)}
                 </p>
-                <p className="text-sm text-gray-700">{item.product.reachDisciption}</p>
+                <p className="text-sm text-gray-700">
+                  {item?.product?.reachDisciption ?? item?.customProduct?.suggestion}
+                </p>
+                <p className="text-sm text-gray-700">
+                  {item?.customProduct?.otherSpecifications}
+                </p>
               </div>
             </div>
           ))}

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import IdolCard from "./IdolCard";
-import { IdolContext } from "../Context/IdolContext";
+import { IdolContext } from "../../Context/IdolContext";
 
 import StarsIcon from "@mui/icons-material/Stars";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-import IdolCardSkeleton from "../Skeleton/IdolCardSkeleton";
+import IdolCardSkeleton from "../../Skeleton/IdolCardSkeleton";
 
 function IdolCardsList() {
   const { idolList } = useContext(IdolContext);

@@ -39,7 +39,7 @@ ChartJS.register(
   PointElement
 );
 
-const HomeDashboard = () => {
+const Dashboard = () => {
   const [idolCount, setIdolCount] = useState(null);
   const [usersCount, setUsersCount] = useState(null);
   const [totalSales, setTotalSales] = useState(null);
@@ -181,4 +181,4 @@ const ChartCard = ({ title, ChartComponent }) => (
   </div>
 );
 
-export default HomeDashboard;
+export default Dashboard;
