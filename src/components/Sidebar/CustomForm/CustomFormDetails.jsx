@@ -68,6 +68,7 @@ function CustomFormDetails() {
   const [Alert, setAlert] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [statusDropdown, setStatusDropdown] = useState("");
+  const [isAccepted, setIsAccepted] = useState(false);
 
   useEffect(() => {
     const fetchFormDetails = async () => {
@@ -241,45 +242,63 @@ function CustomFormDetails() {
         </div>
       </motion.div>
 
-      {form.status !== "Rejected" && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="flex justify-center gap-6 mt-8 flex-wrap">
-          {form.status === "Accepted" ? (
-            <select
-              value={statusDropdown}
-              onChange={(e) => {
-                setStatusDropdown(e.target.value);
-                handleSubmit(e.target.value);
-              }}
-              className="px-4 py-2 rounded-lg border border-blue-400 text-blue-700 shadow-md">
-              <option value="">Update Status</option>
-              {steps.slice(1).map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <>
-              <button
-                onClick={() => handleSubmit("Accepted")}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition duration-200">
-                <CheckCircle className="w-5 h-5" />
-                Accept
-              </button>
+      {form.status !== "Rejected" && form.status !== "Delivered" && (
+          <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="flex justify-center gap-6 mt-8 flex-wrap"
+          >
+            {isAccepted ? (
+                <>
+                  <select
+                      value={statusDropdown}
+                      onChange={(e) => {
+                        setStatusDropdown(e.target.value);
+                        handleSubmit(e.target.value);
+                      }}
+                      className="px-4 py-2 rounded-lg border border-blue-400 text-blue-700 shadow-md"
+                  >
+                    <option value="">Update Status</option>
+                    {steps.slice(1).map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                    ))}
+                  </select>
 
-              <button
-                onClick={() => setShowDialog(true)}
-                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition duration-200">
-                <XCircle className="w-5 h-5" />
-                Reject
-              </button>
-            </>
-          )}
-        </motion.div>
+                  <button
+                      onClick={() => {
+                        setIsAccepted(false);  // Only reset UI
+                      }}
+                      className="flex items-center gap-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition duration-200"
+                  >
+                    Cancel
+                  </button>
+                </>
+            ) : (
+                <>
+                  <button
+                      onClick={() => {
+                        setIsAccepted(true);    // Show dropdown + cancel
+                        handleSubmit("Accepted");  // Immediately set status to Accepted
+                      }}
+                      className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition duration-200"
+                  >
+                    <CheckCircle className="w-5 h-5" />
+                    Accept
+                  </button>
+
+                  <button
+                      onClick={() => handleSubmit("Rejected")}
+                      className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md transition duration-200"
+                  >
+                    <XCircle className="w-5 h-5" />
+                    Reject
+                  </button>
+                </>
+            )}
+          </motion.div>
       )}
     </motion.div>
   );
