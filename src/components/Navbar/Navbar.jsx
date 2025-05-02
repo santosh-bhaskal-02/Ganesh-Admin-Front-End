@@ -63,9 +63,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div
-            className="flex items-center gap-3 cursor-pointer"
-            onClick={() => navigate("/explore")}>
+          <div className="flex items-center gap-3 cursor-pointer">
             <img className="h-22 w-32" src="Ganesh-logo.png" alt="Logo" />
           </div>
 
@@ -104,10 +102,7 @@ const Navbar = () => {
 
           {/* Mobile Right */}
           <div className="md:hidden flex items-center space-x-4">
-            <ShoppingCartIcon
-              onClick={() => navigate("/cart")}
-              className="cursor-pointer hover:text-blue-400 transition"
-            />
+           
             {!signIn ? (
               <Link
                 to="/login"

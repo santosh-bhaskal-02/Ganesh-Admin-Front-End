@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "./index.css";
-import Navbar from "./components/Navbar/Heading.jsx";
+import Navbar from "./components/Navbar/Navbar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import SidebarRoutes from "./components/AdminController/SidebarRoutes.jsx";
 import Login from "./components/Authentication/Login.jsx";
@@ -25,7 +25,6 @@ function App() {
               <Route path="/forgot_password" element={<ForgotPassword />} />
             </Routes>
             <Footer />
-
           </div>
         </IdolProvider>
       </AuthProvider>
