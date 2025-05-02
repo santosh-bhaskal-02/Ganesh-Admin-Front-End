@@ -3,13 +3,13 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { AuthContext } from "../Context/AuthContext";
-import AlertBox from "../Error/AlertBox";
-import LoadingSpinner from "../Error/LoadingSpinner";
+import { AuthContext } from "./Context/AuthContext";
+import AlertBox from "./Error/AlertBox";
+import LoadingSpinner from "./Error/LoadingSpinner";
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 // ... All previous imports remain same
 
-const SignIn = () => {
+function Login () {
   const navigate = useNavigate();
   const { setSignIn } = useContext(AuthContext);
 
@@ -183,4 +183,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Login;
