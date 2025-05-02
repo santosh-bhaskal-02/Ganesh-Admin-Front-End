@@ -61,7 +61,7 @@ const Dashboard = () => {
 
         setIdolCount(data.productsCount.productsCount);
         setUsersCount(data.usersCount.count);
-        setTotalSales(data.totalSales);
+        setTotalSales(data.totalSales.toFixed(2));
         setTotalOrders(data.totalOrders);
         setInventoryCount(data.inventoryCount);
         setTotalOrderItems(data.totalOrderItems);
