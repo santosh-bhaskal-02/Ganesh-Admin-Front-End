@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Ganesh Museum Admin</string>
+    <string name="title_activity_main">Ganesh Museum Admin</string>
+    <string name="package_name">com.admin.ganeshmuseum</string>
+    <string name="custom_url_scheme">com.admin.ganeshmuseum</string>
+</resources>
