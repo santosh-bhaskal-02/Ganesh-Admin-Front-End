@@ -6,7 +6,7 @@ import Footer from "./components/Footer/Footer.jsx";
 import SidebarRoutes from "./components/AdminController/SidebarRoutes.jsx";
 import Login from "./components/Auth/Login.jsx";
 import SignUp from "./components/Auth/SignUp.jsx";
-import ForgotPassword from "./components/Auth/ForgotPassword.js";
+import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import LandingPage from "./components/Home/LandingPage.jsx";
 import { AuthProvider } from "./components/Context/AuthContext.jsx";
 import { IdolProvider } from "./components/Context/IdolContext.jsx";
