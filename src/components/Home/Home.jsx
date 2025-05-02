@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const LandingPage = () => {
+const Home = () => {
   return (
     <div className="relative -top-14">
       <section
@@ -131,4 +131,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default Home;

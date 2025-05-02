@@ -7,7 +7,7 @@ import SidebarRoutes from "./components/AdminController/SidebarRoutes.jsx";
 import Login from "./components/Auth/Login.jsx";
 import SignUp from "./components/Auth/SignUp.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
-import LandingPage from "./components/Home/LandingPage.jsx";
+import Home from "./components/Home/Home.jsx";
 import { AuthProvider } from "./components/Context/AuthContext.jsx";
 import { IdolProvider } from "./components/Context/IdolContext.jsx";
 function App() {
@@ -18,7 +18,7 @@ function App() {
           <Navbar />
           <div className="w-full">
             <Routes>
-              <Route path="/" element={<LandingPage />} />
+              <Route path="/" element={<Home />} />
               <Route path="/dashboard/*" element={<SidebarRoutes />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signUp" element={<SignUp />} />
