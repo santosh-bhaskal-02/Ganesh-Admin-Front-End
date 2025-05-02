@@ -20,7 +20,7 @@ import TaxDeliveryCharges from "../Sidebar/Charges/TaxDeliveryCharges";
 import CustomFormList from "../Sidebar/CustomForm/CustomFormList";
 import CustomFormDetails from "../Sidebar/CustomForm/CustomFormDetails";
 
-import Login from "../Login";
+import Login from "../Auth/Login";
 
 const SidebarRoutes = () => {
   const navigate = useNavigate();
