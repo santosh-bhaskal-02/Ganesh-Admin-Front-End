@@ -4,7 +4,7 @@ import "./index.css";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import SidebarRoutes from "./components/AdminController/SidebarRoutes.jsx";
-import Login from "./components/Authentication/Login.jsx";
+import SignIn from "./components/Authentication/SignIn.jsx";
 import SignUp from "./components/Authentication/SignUp.jsx";
 import ForgotPassword from "./components/Authentication/ForgotPassword.jsx";
 import LandingPage from "./components/Home/LandingPage.jsx";
@@ -20,7 +20,7 @@ function App() {
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/dashboard/*" element={<SidebarRoutes />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<SignIn />} />
               <Route path="/signUp" element={<SignUp />} />
               <Route path="/forgot_password" element={<ForgotPassword />} />
             </Routes>

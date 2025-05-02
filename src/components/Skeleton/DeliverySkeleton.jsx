@@ -22,7 +22,7 @@ const DeliverySkeleton = () => {
         </thead>
         <tbody>
           {rows.map((_, index) => (
-            <tr key={index} className="hidden md:table-row border-b">
+            <tr key={index} className="md:table-row border-b">
               <td className="px-6 py-4">
                 <div className="h-4 w-32 bg-gray-300 rounded-md" />
               </td>

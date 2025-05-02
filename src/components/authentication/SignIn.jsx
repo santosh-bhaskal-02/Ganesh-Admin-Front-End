@@ -9,7 +9,7 @@ import LoadingSpinner from "../Error/LoadingSpinner";
 const apiUrl = import.meta.env.VITE_BACK_END_URL;
 // ... All previous imports remain same
 
-const Login = () => {
+const SignIn = () => {
   const navigate = useNavigate();
   const { setSignIn } = useContext(AuthContext);
 
@@ -183,4 +183,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignIn;
