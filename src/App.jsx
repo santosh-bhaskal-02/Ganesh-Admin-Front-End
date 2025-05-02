@@ -25,6 +25,7 @@ function App() {
               <Route path="/forgot_password" element={<ForgotPassword />} />
             </Routes>
             <Footer />
+            
           </div>
         </IdolProvider>
       </AuthProvider>
